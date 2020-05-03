@@ -1,11 +1,12 @@
 {
-  "name": "financialManager",
+  "name": "financial-manager",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint src/** test/** --fix"
+    "test": "jest",
+    "lint": "eslint src/** test/** --fix",
+    "start": "nodemon ./src/server.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,12 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.2"
+    "eslint-plugin-import": "^2.20.2",
+    "jest": "^25.4.0",
+    "nodemon": "^2.0.3",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
