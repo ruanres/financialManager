@@ -1,7 +1,5 @@
-// Update with your config settings.
 
 module.exports = {
-
   test: {
     client: 'pg',
     version: '12.2',

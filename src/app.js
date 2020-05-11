@@ -1,5 +1,8 @@
 const consign = require('consign');
 const app = require('express')();
+const db = require('./config/db');
+
+app.db = db;
 
 consign({ cwd: 'src', verbose: false })
   .include('./config/middlewares.js')
