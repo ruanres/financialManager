@@ -1,10 +1,10 @@
 module.exports = (app) => {
-  const create = async (req, res) => {
+  const create = async (req, res, next) => {
     try {
       const result = await app.services.account.save(req.body);
       res.status(201).json(result[0]);
     } catch (error) {
-      res.status(400).send({ error: error.message });
+      next(error);
     }
   };
 
@@ -13,12 +13,12 @@ module.exports = (app) => {
     res.status(200).json(result);
   };
 
-  const find = async (req, res) => {
-    const result = await app.services.account.get(req.params.id);
-    if (result) {
+  const find = async (req, res, next) => {
+    try {
+      const result = await app.services.account.get(req.params.id);
       res.status(200).json(result);
-    } else {
-      res.status(404).send({ error: 'Account not found' });
+    } catch (error) {
+      next(error);
     }
   };
 
@@ -29,7 +29,7 @@ module.exports = (app) => {
 
   const remove = async (req, res) => {
     await app.services.account.remove(req.params.id);
-    res.status(200).send();
+    res.status(204).send();
   };
 
   return {

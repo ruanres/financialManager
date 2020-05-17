@@ -50,8 +50,15 @@ it('should delete an account', async () => {
   const accounts = await app.db('accounts').insert(account, ['id']);
   const newAccount = accounts[0];
   const result = await request(app).delete(`${MAIN_ROUTE}/${newAccount.id}`);
-  expect(result.status).toBe(200);
+  expect(result.status).toBe(204);
   const getResult = await request(app).get(`${MAIN_ROUTE}/${newAccount.id}`);
   expect(getResult.status).toBe(404);
   expect(getResult.body.error).toBe('Account not found');
+});
+
+it('should not create an account with n name', async () => {
+  const newAccount = { user_id: user.id };
+  const result = await request(app).post(MAIN_ROUTE).send(newAccount);
+  expect(result.status).toBe(400);
+  expect(result.body.error).toEqual('Name must not be null');
 });
