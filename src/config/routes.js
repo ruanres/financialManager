@@ -11,4 +11,7 @@ module.exports = (app) => {
     .get(app.routes.accounts.find)
     .put(app.routes.accounts.update)
     .delete(app.routes.accounts.remove);
+
+  app.route('/auth/signin')
+    .post(app.routes.auth.signin);
 };
