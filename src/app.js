@@ -5,7 +5,8 @@ const db = require('./config/db');
 app.db = db;
 
 consign({ cwd: 'src', verbose: false })
-  .include('./config/middlewares.js')
+  .include('./config/passport.js')
+  .then('./config/middlewares.js')
   .then('./services')
   .then('./routes')
   .then('./config/routes.js')
@@ -18,6 +19,9 @@ app.use((err, req, res, next) => {
   switch (name) {
     case 'ValidationError':
       res.status(400).send({ error: message });
+      break;
+    case 'AuthorizationError':
+      res.status(401).send({ error: message });
       break;
     case 'NotFoundError':
       res.status(404).send({ error: message });
