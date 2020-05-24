@@ -1,6 +1,10 @@
+const express = require('express');
+
 module.exports = (app) => {
   app.use('/auth', app.routes.auth);
-  app.use('*', app.config.passport.authenticate());
-  app.use('/users', app.routes.user);
-  app.use('/accounts', app.routes.account);
+
+  const protectedRouter = express.Router();
+  protectedRouter.use('/users', app.routes.user);
+  protectedRouter.use('/accounts', app.routes.account);
+  app.use('/', app.config.passport.authenticate(), protectedRouter);
 };
