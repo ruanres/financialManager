@@ -8,11 +8,9 @@ consign({ cwd: 'src', verbose: false })
   .include('./config/passport.js')
   .then('./config/middlewares.js')
   .then('./services')
-  .then('./routes')
+  .then('./controllers')
   .then('./config/routes.js')
   .into(app);
-
-app.get('/', (req, res) => res.status(200).send());
 
 app.use((err, req, res, next) => {
   const { name, message } = err;
