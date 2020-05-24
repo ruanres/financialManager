@@ -9,7 +9,8 @@ consign({ cwd: 'src', verbose: false })
   .then('./config/middlewares.js')
   .then('./services')
   .then('./controllers')
-  .then('./config/routes.js')
+  .then('./routes')
+  .then('./config/router.js')
   .into(app);
 
 app.use((err, req, res, next) => {
