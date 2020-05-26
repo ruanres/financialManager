@@ -1,7 +1,15 @@
+const ForbiddenError = require('../error/ForbiddenError');
+
 module.exports = (app) => {
+  const canAccessAccount = async (accountId, userId) => {
+    const account = await await app.services.account.get({ id: accountId });
+    if (account.user_id !== userId) throw new ForbiddenError();
+  };
+
   const create = async (req, res, next) => {
     try {
-      const result = await app.services.account.save(req.body);
+      const account = { ...req.body, user_id: req.user.id };
+      const result = await app.services.account.save(account);
       res.status(201).json(result[0]);
     } catch (error) {
       next(error);
@@ -9,13 +17,15 @@ module.exports = (app) => {
   };
 
   const findAll = async (req, res) => {
-    const result = await app.services.account.getAll();
+    const result = await app.services.account.getAll({ user_id: req.user.id });
     res.status(200).json(result);
   };
 
   const find = async (req, res, next) => {
     try {
-      const result = await app.services.account.get(req.params.id);
+      const { id } = req.params;
+      await canAccessAccount(id, req.user.id);
+      const result = await app.services.account.get({ id });
       res.status(200).json(result);
     } catch (error) {
       next(error);

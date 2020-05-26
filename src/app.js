@@ -22,6 +22,9 @@ app.use((err, req, res, next) => {
     case 'AuthorizationError':
       res.status(401).send({ error: message });
       break;
+    case 'ForbiddenError':
+      res.status(403).send({ error: message });
+      break;
     case 'NotFoundError':
       res.status(404).send({ error: message });
       break;
