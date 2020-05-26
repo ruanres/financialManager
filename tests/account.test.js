@@ -79,6 +79,14 @@ describe('Accounts tests', () => {
     expect(result.body.user_id).toBe(account.user_id);
   });
 
+  it('should not update another user account', async () => {
+    const account = { name: 'acc 1', user_id: otherUser.id };
+    const [newAccount] = await app.db('accounts').insert(account, ['id']);
+    const result = await makeRequest('put', `${MAIN_ROUTE}/${newAccount.id}`, token, { name: 'updated name' });
+    expect(result.status).toBe(403);
+    expect(result.body.error).toBe('User is not allowed access this resource');
+  });
+
   it('should delete an account', async () => {
     const account = { name: 'acc 1', user_id: user.id };
     const accounts = await app.db('accounts').insert(account, ['id']);
@@ -88,6 +96,14 @@ describe('Accounts tests', () => {
     const getResult = await makeRequest('get', `${MAIN_ROUTE}/${newAccount.id}`, token);
     expect(getResult.status).toBe(404);
     expect(getResult.body.error).toBe('Account not found');
+  });
+
+  it('should not delete another user account', async () => {
+    const account = { name: 'acc 1', user_id: otherUser.id };
+    const [newAccount] = await app.db('accounts').insert(account, ['id']);
+    const result = await makeRequest('delete', `${MAIN_ROUTE}/${newAccount.id}`, token);
+    expect(result.status).toBe(403);
+    expect(result.body.error).toBe('User is not allowed access this resource');
   });
 
   it('should not create an account with no name', async () => {
