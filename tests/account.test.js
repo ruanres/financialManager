@@ -60,8 +60,7 @@ describe('Accounts tests', () => {
 
   it('should return an account per id', async () => {
     const account = { name: 'acc 1', user_id: user.id };
-    const accounts = await app.db('accounts').insert(account, ['id']);
-    const newAccount = accounts[0];
+    const [newAccount] = await app.db('accounts').insert(account, ['id']);
     const result = await makeRequest('get', `${MAIN_ROUTE}/${newAccount.id}`, token);
     expect(result.status).toBe(200);
     expect(result.body.name).toBe(account.name);
@@ -70,8 +69,7 @@ describe('Accounts tests', () => {
 
   it('should update an account', async () => {
     const account = { name: 'acc 1', user_id: user.id };
-    const accounts = await app.db('accounts').insert(account, ['id']);
-    const newAccount = accounts[0];
+    const [newAccount] = await app.db('accounts').insert(account, ['id']);
     const newName = 'updated name';
     const result = await makeRequest('put', `${MAIN_ROUTE}/${newAccount.id}`, token, { name: newName });
     expect(result.status).toBe(200);
@@ -89,8 +87,7 @@ describe('Accounts tests', () => {
 
   it('should delete an account', async () => {
     const account = { name: 'acc 1', user_id: user.id };
-    const accounts = await app.db('accounts').insert(account, ['id']);
-    const newAccount = accounts[0];
+    const [newAccount] = await app.db('accounts').insert(account, ['id']);
     const result = await makeRequest('delete', `${MAIN_ROUTE}/${newAccount.id}`, token);
     expect(result.status).toBe(204);
     const getResult = await makeRequest('get', `${MAIN_ROUTE}/${newAccount.id}`, token);
