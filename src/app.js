@@ -1,6 +1,7 @@
 const consign = require('consign');
 const app = require('express')();
 const db = require('./config/db');
+const errorHandler = require('./error/ErrorHandler');
 
 app.db = db;
 
@@ -13,25 +14,6 @@ consign({ cwd: 'src', verbose: false })
   .then('./config/router.js')
   .into(app);
 
-app.use((err, req, res, next) => {
-  const { name, message } = err;
-  switch (name) {
-    case 'ValidationError':
-      res.status(400).send({ error: message });
-      break;
-    case 'AuthorizationError':
-      res.status(401).send({ error: message });
-      break;
-    case 'ForbiddenError':
-      res.status(403).send({ error: message });
-      break;
-    case 'NotFoundError':
-      res.status(404).send({ error: message });
-      break;
-    default:
-      res.status(500).send(err);
-  }
-  next(err);
-});
+app.use(errorHandler);
 
 module.exports = app;
