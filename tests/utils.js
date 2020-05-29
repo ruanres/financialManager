@@ -13,4 +13,14 @@ const makeRequest = async (verb, route, token, body = {}) => {
   }
 };
 
-module.exports = { getEmail, makeRequest };
+const clearDB = async (tableName = 'all') => {
+  if (tableName === 'all') {
+    await app.db('transactions').del();
+    await app.db('accounts').del();
+    await app.db('users').del();
+  } else {
+    await app.db(tableName).del();
+  }
+};
+
+module.exports = { getEmail, makeRequest, clearDB };

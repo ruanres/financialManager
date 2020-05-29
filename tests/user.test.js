@@ -1,11 +1,12 @@
 const app = require('../src/app');
-const { getEmail, makeRequest } = require('./utils');
+const { getEmail, makeRequest, clearDB } = require('./utils');
 
 describe('User tests', () => {
   const MAIN_ROUTE = '/users';
   let token;
 
   beforeAll(async () => {
+    await clearDB();
     const user = { name: 'tester', email: `${Date.now()}@mail.com`, password: 'password' };
     await app.services.user.save(user);
     const response = await app.services.auth.signin({ email: user.email, password: user.password });

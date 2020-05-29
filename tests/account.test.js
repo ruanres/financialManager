@@ -1,4 +1,4 @@
-const { makeRequest } = require('./utils');
+const { makeRequest, clearDB, getEmail } = require('./utils');
 const app = require('../src/app');
 
 describe('Accounts tests', () => {
@@ -8,8 +8,9 @@ describe('Accounts tests', () => {
   let token;
 
   beforeEach(async () => {
-    const userData = { name: 'tester', email: `${Date.now()}@mail.com`, password: 'password' };
-    const otherUserData = { name: 'other tester', email: `other.${Date.now()}@mail.com`, password: 'password' };
+    await clearDB();
+    const userData = { name: 'userA', email: `user.${getEmail()}`, password: 'password' };
+    const otherUserData = { name: 'userB', email: `other.${getEmail()}`, password: 'password' };
     const userResponse = await app.services.user.save(userData);
     const otherUserResponse = await app.services.user.save(otherUserData);
     user = { ...userResponse[0] };
@@ -29,7 +30,7 @@ describe('Accounts tests', () => {
   });
 
   it('should not create duplicated accounts for the same user', async () => {
-    const account = { name: 'acc 1' };
+    const account = { name: 'new acc' };
     const resultA = await makeRequest('post', MAIN_ROUTE, token, account);
     expect(resultA.status).toBe(201);
     const resultB = await makeRequest('post', MAIN_ROUTE, token, account);
@@ -38,6 +39,7 @@ describe('Accounts tests', () => {
   });
 
   it('should list all the logged user accounts', async () => {
+    await await app.db('accounts').del();
     const accountData = { name: 'acc 1', user_id: user.id };
     const otherAccountData = { name: 'acc 2', user_id: otherUser.id };
     const [userAccount] = await app.db('accounts').insert(
