@@ -45,4 +45,13 @@ describe('Transaction test', () => {
     expect(response.body.length).toBe(1);
     expect(response.body[0].description).toBe(userTransactionData.description);
   });
+
+  it('should create a new transaction', async () => {
+    const transactionData = {
+      description: 'T1', type: 'I', ammount: 100, acc_id: userAcc.id, date: new Date(),
+    };
+    const response = await makeRequest('post', MAIN_ROUTE, token, transactionData);
+    expect(response.status).toBe(201);
+    // expect(response.body.id)
+  });
 });

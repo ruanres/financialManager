@@ -8,5 +8,14 @@ module.exports = (app) => {
     }
   };
 
-  return { findAll };
+  const create = async (req, res, next) => {
+    try {
+      const [transaction] = await app.services.transaction.save(req.body);
+      res.status(201).json(transaction);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return { findAll, create };
 };

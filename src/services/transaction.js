@@ -8,5 +8,7 @@ module.exports = (app) => {
     .andWhere(`${ACCOUNTS}.user_id`, '=', userId)
     .select();
 
-  return { getAll };
+  const save = async (transaction) => app.db(TRANSACTIONS).insert(transaction, ['*']);
+
+  return { getAll, save };
 };
