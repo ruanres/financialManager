@@ -52,6 +52,37 @@ describe('Transaction test', () => {
     };
     const response = await makeRequest('post', MAIN_ROUTE, token, transactionData);
     expect(response.status).toBe(201);
-    // expect(response.body.id)
+    expect(response.body.acc_id).toBe(userAcc.id);
+  });
+
+  it('should get a transaction by its id', async () => {
+    const transactionData = {
+      description: 'T1', type: 'I', ammount: 100, acc_id: userAcc.id, date: new Date(),
+    };
+    const [transaction] = await app.db('transactions').insert(transactionData, ['id']);
+    const response = await makeRequest('get', `${MAIN_ROUTE}/${transaction.id}`, token);
+    expect(response.status).toBe(200);
+    expect(response.body.id).toBe(transaction.id);
+  });
+
+  it('should update an transaction by id', async () => {
+    const transactionData = {
+      description: 'T1', type: 'I', ammount: 100, acc_id: userAcc.id, date: new Date(),
+    };
+    const [transaction] = await app.db('transactions').insert(transactionData, ['id']);
+    const description = 'new Descriotion';
+    const response = await makeRequest('put', `${MAIN_ROUTE}/${transaction.id}`, token, { description });
+    expect(response.status).toBe(200);
+    expect(response.body.id).toBe(transaction.id);
+    expect(response.body.description).toBe(description);
+  });
+
+  it('should delete an transaction by id', async () => {
+    const transactionData = {
+      description: 'T1', type: 'I', ammount: 100, acc_id: userAcc.id, date: new Date(),
+    };
+    const [transaction] = await app.db('transactions').insert(transactionData, ['id']);
+    const response = await makeRequest('delete', `${MAIN_ROUTE}/${transaction.id}`, token);
+    expect(response.status).toBe(200);
   });
 });

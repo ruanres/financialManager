@@ -17,5 +17,34 @@ module.exports = (app) => {
     }
   };
 
-  return { findAll, create };
+  const find = async (req, res, next) => {
+    try {
+      const [transaction] = await app.services.transaction.getOne(req.params.id);
+      res.status(200).json(transaction);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  const update = async (req, res, next) => {
+    try {
+      const [transaction] = await app.services.transaction.update(req.params.id, req.body);
+      res.status(200).json(transaction);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  const remove = async (req, res, next) => {
+    try {
+      await app.services.transaction.remove(req.params.id);
+      res.status(200).send();
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return {
+    findAll, create, find, update, remove,
+  };
 };
