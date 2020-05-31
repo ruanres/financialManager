@@ -38,7 +38,7 @@ describe('Transaction test', () => {
     const otherUserTransactionData = {
       description: 'T2', type: 'O', ammount: 300, acc_id: otherUserAcc.id, date: new Date(),
     };
-    await app.db('transactions').insert(userTransactionData, ['*']);
+    await app.db('transactions').insert(userTransactionData);
     await app.db('transactions').insert(otherUserTransactionData);
     const response = await makeRequest('get', MAIN_ROUTE, token);
     expect(response.status).toBe(200);
@@ -83,6 +83,36 @@ describe('Transaction test', () => {
     };
     const [transaction] = await app.db('transactions').insert(transactionData, ['id']);
     const response = await makeRequest('delete', `${MAIN_ROUTE}/${transaction.id}`, token);
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(204);
+  });
+
+  describe('test the user handling transactions of another user', () => {
+    let transaction;
+
+    beforeAll(async () => {
+      const userTransactionData = {
+        description: 'T1', type: 'I', ammount: 100, acc_id: userAcc.id, date: new Date(),
+      };
+      const otherUserTransactionData = {
+        description: 'T2', type: 'O', ammount: 300, acc_id: otherUserAcc.id, date: new Date(),
+      };
+      await app.db('transactions').insert(userTransactionData);
+      [transaction] = await app.db('transactions').insert(otherUserTransactionData, ['id']);
+    });
+
+    it('should not access another user transaction', async () => {
+      const response = await makeRequest('get', `${MAIN_ROUTE}/${transaction.id}`, token);
+      expect(response.status).toBe(403);
+    });
+
+    it('should not edit another user transaction', async () => {
+      const response = await makeRequest('put', `${MAIN_ROUTE}/${transaction.id}`, token, { description: 'new desc' });
+      expect(response.status).toBe(403);
+    });
+
+    it('should not delete another user transaction', async () => {
+      const response = await makeRequest('delete', `${MAIN_ROUTE}/${transaction.id}`, token);
+      expect(response.status).toBe(403);
+    });
   });
 });

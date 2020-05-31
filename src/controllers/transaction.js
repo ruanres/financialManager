@@ -38,7 +38,7 @@ module.exports = (app) => {
   const remove = async (req, res, next) => {
     try {
       await app.services.transaction.remove(req.params.id);
-      res.status(200).send();
+      res.status(204).send();
     } catch (error) {
       next(error);
     }
