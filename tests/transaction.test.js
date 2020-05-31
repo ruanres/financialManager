@@ -53,6 +53,27 @@ describe('Transaction test', () => {
     const response = await makeRequest('post', MAIN_ROUTE, token, transactionData);
     expect(response.status).toBe(201);
     expect(response.body.acc_id).toBe(userAcc.id);
+    expect(response.body.ammount).toBe('100.00');
+  });
+
+  it('should save a positive ammount for input transactions', async () => {
+    const transactionData = {
+      description: 'T1', type: 'I', ammount: -100, acc_id: userAcc.id, date: new Date(),
+    };
+    const response = await makeRequest('post', MAIN_ROUTE, token, transactionData);
+    expect(response.status).toBe(201);
+    expect(response.body.acc_id).toBe(userAcc.id);
+    expect(response.body.ammount).toBe('100.00');
+  });
+
+  it('should save a negative ammount for output transactions', async () => {
+    const transactionData = {
+      description: 'T1', type: 'O', ammount: 100, acc_id: userAcc.id, date: new Date(),
+    };
+    const response = await makeRequest('post', MAIN_ROUTE, token, transactionData);
+    expect(response.status).toBe(201);
+    expect(response.body.acc_id).toBe(userAcc.id);
+    expect(response.body.ammount).toBe('-100.00');
   });
 
   it('should get a transaction by its id', async () => {
