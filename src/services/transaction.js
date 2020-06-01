@@ -1,3 +1,5 @@
+const ValidationError = require('../error/ValidationError');
+
 module.exports = (app) => {
   const TRANSACTIONS = 'transactions';
   const ACCOUNTS = 'accounts';
@@ -10,14 +12,32 @@ module.exports = (app) => {
 
   const getOne = async (id) => app.db(TRANSACTIONS).where({ id }).select();
 
-  const save = async (transaction) => {
+  const validate = (transaction) => {
+    const props = ['description', 'type', 'date', 'ammount', 'acc_id'];
+    props.forEach((prop) => {
+      if (!transaction[prop]) {
+        throw new ValidationError(`${prop} must be valid`);
+      }
+    });
+
+    if (!['I', 'O'].includes(transaction.type)) {
+      throw new ValidationError('Type property must be valid');
+    }
+  };
+
+  const formatAmmount = (transaction) => {
     const { type, ammount } = transaction;
-    const newTransaction = { ...transaction };
     const isInputAmmountWrong = type === 'I' && ammount < 0;
     const isOutputAmmountWrong = type === 'O' && ammount > 0;
-    if (isInputAmmountWrong || isOutputAmmountWrong) {
-      newTransaction.ammount *= -1;
-    }
+    return isInputAmmountWrong || isOutputAmmountWrong ? ammount * -1 : ammount;
+  };
+
+  const save = async (transaction) => {
+    validate(transaction);
+    const newTransaction = {
+      ...transaction,
+      ammount: formatAmmount(transaction),
+    };
     return app.db(TRANSACTIONS).insert(newTransaction, ['*']);
   };
 

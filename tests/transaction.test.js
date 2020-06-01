@@ -18,10 +18,8 @@ describe('Transaction test', () => {
     otherUser = { ...otherUserResult[0] };
 
 
-    const accResult = await app.services.account.save({ name: 'user acc', user_id: user.id });
-    const otherAccResult = await app.services.account.save({ name: 'otherUser acc', user_id: otherUser.id });
-    userAcc = { ...accResult[0] };
-    otherUserAcc = { ...otherAccResult[0] };
+    [userAcc] = await app.services.account.save({ name: 'user acc', user_id: user.id });
+    [otherUserAcc] = await app.services.account.save({ name: 'otherUser acc', user_id: otherUser.id });
 
     const response = await app.services.auth.signin({
       email: userData.email, password: userData.password,
@@ -134,6 +132,46 @@ describe('Transaction test', () => {
     it('should not delete another user transaction', async () => {
       const response = await makeRequest('delete', `${MAIN_ROUTE}/${transaction.id}`, token);
       expect(response.status).toBe(403);
+    });
+  });
+
+  describe('test invalid inputs', () => {
+    let accountId;
+
+    beforeAll(async () => {
+      const [account] = await app.services.account.save({ name: 'other', user_id: user.id });
+      accountId = account.id;
+    });
+
+    it.each([
+      ['description', {
+        type: 'I', ammount: -100, acc_id: accountId, date: new Date(),
+      }],
+      ['type', {
+        description: 'desc', ammount: -100, acc_id: accountId, date: new Date(),
+      }],
+      ['ammount', {
+        description: 'desc', type: 'I', acc_id: accountId, date: new Date(),
+      }],
+      ['acc_id', {
+        description: 'desc', type: 'I', ammount: -100, date: new Date(),
+      }],
+      ['date', {
+        description: 'desc', type: 'I', ammount: -100, acc_id: accountId,
+      }],
+    ])('should not insert a transaction with no %s', async (prop, t) => {
+      const response = await makeRequest('post', MAIN_ROUTE, token, t);
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe(`${prop} must be valid`);
+    });
+
+    it('should not insert a transaction with invalid type', async () => {
+      const data = {
+        description: 'desc', ammount: -100, acc_id: accountId, date: new Date(), type: 'invalid',
+      };
+      const response = await makeRequest('post', MAIN_ROUTE, token, data);
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Type property must be valid');
     });
   });
 });
