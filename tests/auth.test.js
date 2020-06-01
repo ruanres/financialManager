@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../src/app');
-const { getEmail } = require('./utils');
+const { getEmail, clearDB } = require('./utils');
 
 describe('Auth tests', () => {
   const ROUTE = '/auth';
@@ -12,6 +12,8 @@ describe('Auth tests', () => {
     user = { name: 'tom', email: getEmail(), password: 'password' };
     await app.services.user.save(user);
   });
+
+  afterAll(clearDB);
 
   it('should create a user by signup', async () => {
     const newUser = { name: 'tom', email: getEmail(), password: 'password' };

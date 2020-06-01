@@ -7,20 +7,20 @@ describe('Accounts tests', () => {
   let otherUser;
   let token;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     await clearDB();
     const userData = { name: 'userA', email: `user.${getEmail()}`, password: 'password' };
     const otherUserData = { name: 'userB', email: `other.${getEmail()}`, password: 'password' };
-    const userResponse = await app.services.user.save(userData);
-    const otherUserResponse = await app.services.user.save(otherUserData);
-    user = { ...userResponse[0] };
-    otherUser = { ...otherUserResponse[0] };
+    [user] = await app.services.user.save(userData);
+    [otherUser] = await app.services.user.save(otherUserData);
 
     const response = await app.services.auth.signin({
       email: userData.email, password: userData.password,
     });
     token = response.token;
   });
+
+  afterAll(clearDB);
 
   it('should create an account', async () => {
     const newAccount = { name: 'acc 1' };

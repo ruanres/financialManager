@@ -6,12 +6,13 @@ describe('User tests', () => {
   let token;
 
   beforeAll(async () => {
-    await clearDB();
     const user = { name: 'tester', email: `${Date.now()}@mail.com`, password: 'password' };
     await app.services.user.save(user);
     const response = await app.services.auth.signin({ email: user.email, password: user.password });
     token = response.token;
   });
+
+  afterAll(clearDB);
 
   it('should list all users', async () => {
     const response = await makeRequest('get', MAIN_ROUTE, token);

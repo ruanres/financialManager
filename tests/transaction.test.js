@@ -12,12 +12,8 @@ describe('Transaction test', () => {
   beforeAll(async () => {
     const userData = { name: 'tester', email: `${Date.now()}@mail.com`, password: 'password' };
     const otherUserData = { name: 'other tester', email: `other.${Date.now()}@mail.com`, password: 'password' };
-    const userResult = await app.services.user.save(userData);
-    const otherUserResult = await app.services.user.save(otherUserData);
-    user = { ...userResult[0] };
-    otherUser = { ...otherUserResult[0] };
-
-
+    [user] = await app.services.user.save(userData);
+    [otherUser] = await app.services.user.save(otherUserData);
     [userAcc] = await app.services.account.save({ name: 'user acc', user_id: user.id });
     [otherUserAcc] = await app.services.account.save({ name: 'otherUser acc', user_id: otherUser.id });
 
