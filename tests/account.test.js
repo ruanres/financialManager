@@ -92,9 +92,6 @@ describe('Accounts tests', () => {
     const [newAccount] = await app.db('accounts').insert(account, ['id']);
     const result = await makeRequest('delete', `${MAIN_ROUTE}/${newAccount.id}`, token);
     expect(result.status).toBe(204);
-    const getResult = await makeRequest('get', `${MAIN_ROUTE}/${newAccount.id}`, token);
-    expect(getResult.status).toBe(404);
-    expect(getResult.body.error).toBe('Account not found');
   });
 
   it('should not delete another user account', async () => {
@@ -110,5 +107,17 @@ describe('Accounts tests', () => {
     const result = await makeRequest('post', MAIN_ROUTE, token, newAccount);
     expect(result.status).toBe(400);
     expect(result.body.error).toEqual('Name must not be null');
+  });
+
+  it('should not delete an account with associated transactions', async () => {
+    const account = { name: 'acc 1', user_id: user.id };
+    const [newAccount] = await app.db('accounts').insert(account, ['id']);
+    const transaction = {
+      description: 'T1', type: 'I', ammount: 100, acc_id: newAccount.id, date: new Date(),
+    };
+    await app.db('transactions').insert(transaction, ['id']);
+    const result = await makeRequest('delete', `${MAIN_ROUTE}/${newAccount.id}`, token);
+    expect(result.status).toBe(400);
+    expect(result.body.error).toBe('This account has transactions related to it');
   });
 });

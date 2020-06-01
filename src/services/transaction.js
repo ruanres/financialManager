@@ -10,7 +10,7 @@ module.exports = (app) => {
     .andWhere(`${ACCOUNTS}.user_id`, '=', userId)
     .select();
 
-  const getOne = async (id) => app.db(TRANSACTIONS).where({ id }).select();
+  const getOne = async (filter = {}) => app.db(TRANSACTIONS).where(filter).first();
 
   const validate = (transaction) => {
     const props = ['description', 'type', 'date', 'ammount', 'acc_id'];

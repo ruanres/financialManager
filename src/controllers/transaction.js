@@ -19,7 +19,7 @@ module.exports = (app) => {
 
   const find = async (req, res, next) => {
     try {
-      const [transaction] = await app.services.transaction.getOne(req.params.id);
+      const transaction = await app.services.transaction.getOne({ id: req.params.id });
       res.status(200).json(transaction);
     } catch (error) {
       next(error);
