@@ -13,6 +13,4 @@ exports.up = (knex) => knex.schema.createTable(TABLE_NAME, (t) => {
     .notNull();
 });
 
-exports.down = (knex) => {
-  knex.schema.dropTableIfExists(TABLE_NAME);
-};
+exports.down = (knex) => knex.schema.dropTableIfExists(TABLE_NAME);
