@@ -1,7 +1,5 @@
-const bcrypt = require('bcrypt');
 const ValidationError = require('../error/ValidationError');
-
-const saltRounds = 10;
+const { hashPassword } = require('../utils');
 
 module.exports = (app) => {
   const findOne = (filter = {}) => app.db('users').where(filter).first();
@@ -17,7 +15,7 @@ module.exports = (app) => {
     if (sameEmailUser) throw new ValidationError('Email must be unique');
 
     const newUser = { ...user };
-    newUser.password = await bcrypt.hash(user.password, saltRounds);
+    newUser.password = await hashPassword(user.password);
     return app.db('users').insert(newUser, ['name', 'id', 'email']);
   };
 

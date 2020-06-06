@@ -1,9 +1,7 @@
-
-const TRANSFERS = 'transfers';
-const ACCOUNTS = 'accounts';
+const TABLES = require('../enums/tables');
 
 exports.up = (knex) => Promise.all([
-  knex.schema.createTable(TRANSFERS, (t) => {
+  knex.schema.createTable(TABLES.TRANSFERS, (t) => {
     t.increments('id').primary();
     t.string('description').notNull();
     t.date('date').notNull();
@@ -21,18 +19,18 @@ exports.up = (knex) => Promise.all([
       .inTable('users')
       .notNull();
   }),
-  knex.schema.table(ACCOUNTS, (t) => {
+  knex.schema.table(TABLES.TRANSACTIONS, (t) => {
     t.integer('transfer_id')
       .references('id')
-      .inTable(TRANSFERS)
+      .inTable(TABLES.TRANSFERS)
       .notNull();
   }),
 ]);
 
 
 exports.down = (knex) => Promise.all([
-  knex.schema.table(ACCOUNTS, (t) => {
+  knex.schema.table(TABLES.ACCOUNTS, (t) => {
     t.dropColumn('transfer_id');
   }),
-  knex.schema.dropTableIfExists(TRANSFERS),
+  knex.schema.dropTableIfExists(TABLES.TRANSFERS),
 ]);

@@ -8,9 +8,8 @@ module.exports = {
       user: 'pguser',
       password: 'pgpass',
     },
-    migrations: {
-      directory: 'src/migrations',
-    },
+    migrations: { directory: 'src/migrations' },
+    seeds: { directory: 'src/seeds' },
   },
 
 };
