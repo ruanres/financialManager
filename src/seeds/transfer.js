@@ -9,7 +9,7 @@ exports.seed = async (knex) => {
   await knex(TABLES.USERS).del();
 
   const password = await hashPassword('password');
-  const [userId1, userId2] = [10000, 10002];
+  const [userId1, userId2] = [10000, 10001];
   await knex(TABLES.USERS).insert([
     {
       id: userId1, name: 'user #1', email: 'user1@mail.com', password,

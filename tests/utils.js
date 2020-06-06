@@ -23,4 +23,25 @@ const clearDB = async (tableName = 'all') => {
   }
 };
 
-module.exports = { getEmail, makeRequest, clearDB };
+const getTestEntities = () => {
+  const password = 'password';
+  const users = [{
+    id: 10000, name: 'user #1', email: 'user1@mail.com', password,
+  },
+  {
+    id: 10002, name: 'user #2', email: 'user2@mail.com', password,
+  }];
+
+  const accounts = [
+    { id: 10000, name: 'accOri #1', user_id: users[0].id },
+    { id: 10001, name: 'accDest #1', user_id: users[0].id },
+    { id: 10002, name: 'accOri #2', user_id: users[1].id },
+    { id: 10003, name: 'accDest #2', user_id: users[1].id },
+  ];
+
+  return { users, accounts };
+};
+
+module.exports = {
+  getEmail, makeRequest, clearDB, getTestEntities,
+};
