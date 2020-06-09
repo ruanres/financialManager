@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand --detectOpenHandles --forceExit",
-    "test-watch": "jest --watch --runInBand --detectOpenHandles --forceExit",
+    "test": "jest --runInBand --detectOpenHandles --forceExit --no-cache",
+    "test-watch": "jest --watch --runInBand --detectOpenHandles --forceExit --no-cache",
     "lint": "eslint src/** test/** --fix",
     "start": "nodemon ./src/server.js"
   },

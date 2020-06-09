@@ -29,7 +29,7 @@ const getTestEntities = () => {
     id: 10000, name: 'user #1', email: 'user1@mail.com', password,
   },
   {
-    id: 10002, name: 'user #2', email: 'user2@mail.com', password,
+    id: 10001, name: 'user #2', email: 'user2@mail.com', password,
   }];
 
   const accounts = [
