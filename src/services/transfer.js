@@ -12,14 +12,14 @@ module.exports = (app) => {
         description: `Transfer to acc #${transfer.acc_dest_id}`,
         date: new Date(),
         type: 'O',
-        ammount: -100,
+        ammount: transfer.ammount * -1,
         acc_id: transfer.acc_ori_id,
         transfer_id: transfer.id,
       }, {
         description: `Transfer from acc #${transfer.acc_ori_id}`,
         date: new Date(),
         type: 'I',
-        ammount: 100,
+        ammount: transfer.ammount,
         acc_id: transfer.acc_dest_id,
         transfer_id: transfer.id,
       },
@@ -53,5 +53,15 @@ module.exports = (app) => {
     return newTransfer;
   };
 
-  return { getAll, save, getOne };
+  const update = async (id, updatedTransfer) => {
+    await validate(updatedTransfer);
+    const [transfer] = await app.db(TABLES.TRANSFERS).where({ id }).update(updatedTransfer, '*');
+    await app.db(TABLES.TRANSACTIONS).where({ transfer_id: id }).del();
+    await createRelatedTransactions(transfer);
+    return transfer;
+  };
+
+  return {
+    getAll, save, getOne, update,
+  };
 };
