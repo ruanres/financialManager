@@ -19,7 +19,8 @@ module.exports = (app) => {
 
   const create = async (req, res, next) => {
     try {
-      const transfer = await app.services.transfer.save(req.body);
+      const body = { ...req.body, user_id: req.user.id };
+      const transfer = await app.services.transfer.save(body);
       res.status(201).json(transfer);
     } catch (error) {
       next(error);
@@ -28,7 +29,8 @@ module.exports = (app) => {
 
   const update = async (req, res, next) => {
     try {
-      const transfer = await app.services.transfer.update(req.params.id, req.body);
+      const body = { ...req.body, user_id: req.user.id };
+      const transfer = await app.services.transfer.update(req.params.id, body);
       res.status(200).json(transfer);
     } catch (error) {
       next(error);

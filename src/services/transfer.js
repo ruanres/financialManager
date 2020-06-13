@@ -47,14 +47,12 @@ module.exports = (app) => {
   };
 
   const save = async (transfer) => {
-    await validate(transfer);
     const [newTransfer] = await app.db(TABLES.TRANSFERS).insert(transfer, '*');
     await createRelatedTransactions(newTransfer);
     return newTransfer;
   };
 
   const update = async (id, updatedTransfer) => {
-    await validate(updatedTransfer);
     const [transfer] = await app.db(TABLES.TRANSFERS).where({ id }).update(updatedTransfer, '*');
     await app.db(TABLES.TRANSACTIONS).where({ transfer_id: id }).del();
     await createRelatedTransactions(transfer);
@@ -62,6 +60,6 @@ module.exports = (app) => {
   };
 
   return {
-    getAll, save, getOne, update,
+    getAll, save, getOne, update, validate,
   };
 };
