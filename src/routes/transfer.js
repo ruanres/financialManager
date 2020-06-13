@@ -1,7 +1,21 @@
 const express = require('express');
+const ForbiddenError = require('../error/ForbiddenError');
 
 module.exports = (app) => {
   const router = express.Router();
+
+  router.param('id', async (req, res, next) => {
+    try {
+      const transfer = await await app.services.transfer.getOne({ id: req.params.id });
+      if (transfer.user_id !== req.user.id) {
+        next(new ForbiddenError());
+      } else {
+        next();
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
 
   const validate = async (req, res, next) => {
     try {

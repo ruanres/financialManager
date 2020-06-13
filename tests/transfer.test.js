@@ -304,4 +304,11 @@ describe('Transfers tests', () => {
       expect(transactions).toHaveLength(0);
     });
   });
+
+  it('should not handle the transfers from another user', async () => {
+    const otherUserTransferId = 10001;
+    const response = await makeRequest('get', `${ROUTE}/${otherUserTransferId}`, token);
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe('User is not allowed access this resource');
+  });
 });
