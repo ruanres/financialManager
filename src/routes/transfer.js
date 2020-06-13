@@ -16,6 +16,7 @@ module.exports = (app) => {
   router.get('/:id', app.controllers.transfer.find);
   router.post('/', validate, app.controllers.transfer.create);
   router.put('/:id', validate, app.controllers.transfer.update);
+  router.delete('/:id', app.controllers.transfer.remove);
 
   return router;
 };

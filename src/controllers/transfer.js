@@ -37,8 +37,17 @@ module.exports = (app) => {
     }
   };
 
+  const remove = async (req, res, next) => {
+    try {
+      await app.services.transfer.remove(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  };
+
 
   return {
-    findAll, create, find, update,
+    findAll, create, find, update, remove,
   };
 };

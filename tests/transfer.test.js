@@ -8,6 +8,7 @@ describe('Transfers tests', () => {
   const accOriId = 10000;
   const accDestId = 10001;
   const anotherUserAcc = 10002;
+  const transferId = 10000;
   const entities = getTestEntities();
   const [user1] = entities.users;
   const [accOri, accDest] = entities.accounts;
@@ -32,7 +33,7 @@ describe('Transfers tests', () => {
   });
 
   describe('When creating transfers successfully', () => {
-    let transferId;
+    let newTransferId;
     let income;
     let outcome;
 
@@ -41,14 +42,14 @@ describe('Transfers tests', () => {
         description: 'new transfer', user_id: user1.id, acc_ori_id: accOri.id, acc_dest_id: accDest.id, ammount: 100, date: new Date(),
       };
       const response = await makeRequest('post', ROUTE, token, newTransfer);
-      transferId = response.body.id;
+      newTransferId = response.body.id;
       expect(response.status).toBe(201);
       expect(response.body.description).toBe(newTransfer.description);
     });
 
     it('should create two new transactions related to the new transfer ', async () => {
       const transactions = await app.db(TABLES.TRANSACTIONS)
-        .where({ transfer_id: transferId })
+        .where({ transfer_id: newTransferId })
         .orderBy('ammount');
       expect(transactions.length).toBe(2);
       [outcome, income] = transactions;
@@ -69,8 +70,8 @@ describe('Transfers tests', () => {
     });
 
     it('should create transactions that reference the new transfer', () => {
-      expect(outcome.transfer_id).toBe(transferId);
-      expect(income.transfer_id).toBe(transferId);
+      expect(outcome.transfer_id).toBe(newTransferId);
+      expect(income.transfer_id).toBe(newTransferId);
     });
   });
 
@@ -161,7 +162,6 @@ describe('Transfers tests', () => {
   });
 
   describe('When updating transfers successfully', () => {
-    const transferId = 10000;
     let income;
     let outcome;
 
@@ -209,8 +209,6 @@ describe('Transfers tests', () => {
   });
 
   describe('When updating a transfer with a invalid field value', () => {
-    const transferId = 10000;
-
     it.each([
       ['description', {
         user_id: userId,
@@ -286,6 +284,24 @@ describe('Transfers tests', () => {
       const response = await makeRequest('put', `${ROUTE}/${transferId}`, token, transfer);
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('It is possible to transfer to another user account');
+    });
+  });
+
+  describe('when removing a transfer', () => {
+    it('should return a 204 status code', async () => {
+      const response = await makeRequest('delete', `${ROUTE}/${transferId}`, token);
+      expect(response.status).toBe(204);
+    });
+
+    it('should have removed the transfer from the database', async () => {
+      const transactions = await app.db(TABLES.TRANSFERS).where({ id: transferId }).select();
+      expect(transactions).toHaveLength(0);
+    });
+
+    it('should have removed the transactions related to this transfer', async () => {
+      const transactions = await app.db(TABLES.TRANSACTIONS)
+        .where({ transfer_id: transferId }).select();
+      expect(transactions).toHaveLength(0);
     });
   });
 });

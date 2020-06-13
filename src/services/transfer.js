@@ -52,14 +52,22 @@ module.exports = (app) => {
     return newTransfer;
   };
 
+  const deleteRelatedTransactions = async (transferId) => app.db(TABLES.TRANSACTIONS)
+    .where({ transfer_id: transferId }).del();
+
   const update = async (id, updatedTransfer) => {
     const [transfer] = await app.db(TABLES.TRANSFERS).where({ id }).update(updatedTransfer, '*');
-    await app.db(TABLES.TRANSACTIONS).where({ transfer_id: id }).del();
+    await deleteRelatedTransactions(id);
     await createRelatedTransactions(transfer);
     return transfer;
   };
 
+  const remove = async (id) => {
+    await deleteRelatedTransactions(id);
+    return app.db(TABLES.TRANSFERS).where({ id }).del();
+  };
+
   return {
-    getAll, save, getOne, update, validate,
+    getAll, save, getOne, update, validate, remove,
   };
 };
