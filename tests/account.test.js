@@ -4,13 +4,13 @@ const app = require('../src/app');
 describe('Accounts tests', () => {
   const MAIN_ROUTE = '/accounts';
   const { users, accounts } = getTestEntities();
-  const [user1] = users;
+  const [user] = users;
   const [userAcc,, otherUserAcc] = accounts;
   let token;
 
   beforeAll(async () => {
     const response = await app.services.auth.signin({
-      email: user1.email, password: user1.password,
+      email: user.email, password: user.password,
     });
     token = response.token;
   });
@@ -39,7 +39,7 @@ describe('Accounts tests', () => {
     const result = await makeRequest('get', MAIN_ROUTE, token);
     expect(result.status).toBe(200);
     expect(result.body.length).toBe(2);
-    expect(result.body[0].id).toBe(user1.id);
+    expect(result.body[0].id).toBe(user.id);
   });
 
   it('should not access another users accounts', async () => {
@@ -70,7 +70,7 @@ describe('Accounts tests', () => {
   });
 
   it('should delete an account', async () => {
-    const account = { name: 'acc 1', user_id: user1.id };
+    const account = { name: 'acc 1', user_id: user.id };
     const [newAccount] = await app.db('accounts').insert(account, ['id']);
     const result = await makeRequest('delete', `${MAIN_ROUTE}/${newAccount.id}`, token);
     expect(result.status).toBe(204);

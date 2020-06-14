@@ -24,22 +24,84 @@ const clearDB = async (tableName = 'all') => {
 };
 
 const getTestEntities = () => {
+  const [userId1, userId2] = [10000, 10001];
+  const [accOri1, accDest1, accOri2, accDest2] = [10000, 10001, 10002, 10003];
+  const [transferId1, transferId2] = [10000, 10001];
   const password = 'password';
+
   const users = [{
-    id: 10000, name: 'user #1', email: 'user1@mail.com', password,
+    id: userId1, name: 'user #1', email: 'user1@mail.com', password,
   },
   {
-    id: 10001, name: 'user #2', email: 'user2@mail.com', password,
+    id: userId2, name: 'user #2', email: 'user2@mail.com', password,
   }];
 
   const accounts = [
-    { id: 10000, name: 'accOri #1', user_id: users[0].id },
-    { id: 10001, name: 'accDest #1', user_id: users[0].id },
-    { id: 10002, name: 'accOri #2', user_id: users[1].id },
-    { id: 10003, name: 'accDest #2', user_id: users[1].id },
+    { id: accOri1, name: 'accOri #1', user_id: users[0].id },
+    { id: accDest1, name: 'accDest #1', user_id: users[0].id },
+    { id: accOri2, name: 'accOri #2', user_id: users[1].id },
+    { id: accDest2, name: 'accDest #2', user_id: users[1].id },
   ];
 
-  return { users, accounts };
+  const transfers = [
+    {
+      id: transferId1,
+      description: 'Transfer #1',
+      user_id: userId1,
+      acc_ori_id: accOri1,
+      acc_dest_id: accDest1,
+      ammount: 100,
+      date: new Date(),
+    },
+    {
+      id: transferId2,
+      description: 'Transfer #2',
+      user_id: userId2,
+      acc_ori_id: accOri2,
+      acc_dest_id: accDest2,
+      ammount: 100,
+      date: new Date(),
+    },
+  ];
+
+  const transactions = [
+    {
+      description: 'Transfer from accOri #1',
+      date: new Date(),
+      ammount: 100,
+      type: 'I',
+      acc_id: accDest1,
+      transfer_id: transferId1,
+    },
+    {
+      description: 'Transfer to accDest #1',
+      date: new Date(),
+      ammount: -100,
+      type: 'O',
+      acc_id: accOri1,
+      transfer_id: transferId1,
+    },
+    {
+      description: 'Transfer from accOri #2',
+      date: new Date(),
+      ammount: 100,
+      type: 'I',
+      acc_id: accDest2,
+      transfer_id: transferId2,
+    },
+    {
+      description: 'Transfer to accDest #2',
+      date: new Date(),
+      ammount: -100,
+      type: 'O',
+      acc_id: accOri2,
+      transfer_id: transferId2,
+    },
+  ];
+
+  return {
+    users, accounts, transfers, transactions,
+  };
 };
 
 module.exports = {
