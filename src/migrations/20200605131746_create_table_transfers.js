@@ -29,7 +29,7 @@ exports.up = (knex) => Promise.all([
 
 
 exports.down = (knex) => Promise.all([
-  knex.schema.table(TABLES.ACCOUNTS, (t) => {
+  knex.schema.table(TABLES.TRANSACTIONS, (t) => {
     t.dropColumn('transfer_id');
   }),
   knex.schema.dropTableIfExists(TABLES.TRANSFERS),
