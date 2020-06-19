@@ -73,6 +73,11 @@ describe('Transfers tests', () => {
       expect(outcome.transfer_id).toBe(newTransferId);
       expect(income.transfer_id).toBe(newTransferId);
     });
+
+    it('should create transactions that are with status done', () => {
+      expect(outcome.status).toBe(true);
+      expect(income.status).toBe(true);
+    });
   });
 
   describe('When creating an invalid transfer', () => {
