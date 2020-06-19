@@ -24,23 +24,36 @@ const clearDB = async (tableName = 'all') => {
 };
 
 const getTestEntities = () => {
-  const [userId1, userId2] = [10000, 10001];
+  const [userId1, userId2, userId3, userId4] = [10000, 10001, 10100, 10101];
   const [accOri1, accDest1, accOri2, accDest2] = [10000, 10001, 10002, 10003];
+  const [accOri3, accDest3, accOri4, accDest4] = [10100, 10101, 10102, 10103];
   const [transferId1, transferId2] = [10000, 10001];
   const password = 'password';
 
-  const users = [{
-    id: userId1, name: 'user #1', email: 'user1@mail.com', password,
-  },
-  {
-    id: userId2, name: 'user #2', email: 'user2@mail.com', password,
-  }];
+  const users = [
+    {
+      id: userId1, name: 'user #1', email: 'user1@mail.com', password,
+    },
+    {
+      id: userId2, name: 'user #2', email: 'user2@mail.com', password,
+    },
+    {
+      id: userId3, name: 'user #3', email: 'user3@mail.com', password,
+    },
+    {
+      id: userId4, name: 'user #4', email: 'user4@mail.com', password,
+    },
+  ];
 
   const accounts = [
-    { id: accOri1, name: 'accOri #1', user_id: users[0].id },
-    { id: accDest1, name: 'accDest #1', user_id: users[0].id },
-    { id: accOri2, name: 'accOri #2', user_id: users[1].id },
-    { id: accDest2, name: 'accDest #2', user_id: users[1].id },
+    { id: accOri1, name: 'accOri #1', user_id: userId1 },
+    { id: accDest1, name: 'accDest #1', user_id: userId1 },
+    { id: accOri2, name: 'accOri #2', user_id: userId2 },
+    { id: accDest2, name: 'accDest #2', user_id: userId2 },
+    { id: accOri3, name: 'Acc main balance', user_id: userId3 },
+    { id: accDest3, name: 'Acc secondary balance', user_id: userId3 },
+    { id: accOri4, name: 'Acc alternative #1', user_id: userId4 },
+    { id: accDest4, name: 'Acc alternative #2', user_id: userId4 },
   ];
 
   const transfers = [

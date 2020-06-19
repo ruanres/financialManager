@@ -22,8 +22,7 @@ exports.up = (knex) => Promise.all([
   knex.schema.table(TABLES.TRANSACTIONS, (t) => {
     t.integer('transfer_id')
       .references('id')
-      .inTable(TABLES.TRANSFERS)
-      .notNull();
+      .inTable(TABLES.TRANSFERS);
   }),
 ]);
 

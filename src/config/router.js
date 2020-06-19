@@ -8,5 +8,6 @@ module.exports = (app) => {
   protectedRouter.use('/accounts', app.routes.account);
   protectedRouter.use('/transactions', app.routes.transaction);
   protectedRouter.use('/transfers', app.routes.transfer);
+  protectedRouter.use('/balance', app.routes.balance);
   app.use('/', app.config.passport.authenticate(), protectedRouter);
 };
