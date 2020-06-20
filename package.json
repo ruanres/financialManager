@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage --runInBand --detectOpenHandles --forceExit --no-cache",
-    "test-watch": "jest --watch --runInBand --detectOpenHandles --forceExit --no-cache",
-    "lint": "eslint src/** tests/** --fix",
-    "start": "nodemon ./src/server.js"
+    "start": "NODE_ENV=test nodemon ./src/server.js",
+    "start-prod": "NODE_ENV=prod nodemon ./src/server.js",
+    "test": "NODE_ENV=test jest --coverage --runInBand --detectOpenHandles --forceExit --no-cache",
+    "test-watch": "NODE_ENV=test jest --watch --runInBand --detectOpenHandles --forceExit --no-cache",
+    "lint": "eslint src/** tests/** --fix"
   },
   "repository": {
     "type": "git",
